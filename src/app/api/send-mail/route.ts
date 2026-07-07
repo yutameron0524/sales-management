@@ -15,7 +15,7 @@ if (!apiKey) {
   throw new Error("RESEND_API_KEY is not set");
 }
 
-const resend = new Resend(apiKey);
+const resend = new Resend(apiKey); 
 // 🔵 GET（データ取得）
 export async function GET() {
   const today = new Date().toISOString().split("T")[0];
