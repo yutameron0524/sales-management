@@ -46,7 +46,7 @@ export async function POST() {
 
     await resend.emails.send({
       from: "onboarding@resend.dev",
-      to: "あなたのメールアドレス",
+      to: "yuta.yone.1021@gmail.com",
       subject: "営業管理アプリ",
       text: `今日の案件があります：\n${JSON.stringify(data, null, 2)}`,
     });
