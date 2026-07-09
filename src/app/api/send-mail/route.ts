@@ -24,25 +24,24 @@ if (!apiKey) {
 const resend = new Resend(apiKey); 
 // 🔵 GET（データ取得）
 export async function GET() {
-  const today = new Date().toISOString().split("T")[0];
-
-  const { data, error } = await supabase
-    .from("deals")
-    .select("*")
-    .eq("next_follow_date", today);
-
-  return NextResponse.json({ data, error });
-}
-
-// 🔴 POST（メール送信）
-export async function POST() {
   try {
     const today = new Date().toISOString().split("T")[0];
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("deals")
       .select("*")
       .eq("next_follow_date", today);
+
+    if (error) {
+      return NextResponse.json({ error }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      return NextResponse.json({
+        success: true,
+        message: "今日の案件はありません。",
+      });
+    }
 
     await resend.emails.send({
       from: "onboarding@resend.dev",
@@ -51,7 +50,10 @@ export async function POST() {
       text: `今日の案件があります：\n${JSON.stringify(data, null, 2)}`,
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      message: "メールを送信しました。",
+    });
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
