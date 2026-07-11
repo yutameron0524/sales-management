@@ -43,11 +43,23 @@ export async function GET() {
       });
     }
 
+    const message = data
+  .map(
+    (deal) =>
+      `案件名：${deal.title}
+会社名：${deal.company}
+フォロー日：${deal.next_follow_date}`
+  )
+  .join("\n\n--------------------\n\n");
+
     await resend.emails.send({
       from: "onboarding@resend.dev",
       to: "yuta.yone.1021@gmail.com",
       subject: "営業管理アプリ",
-      text: `今日の案件があります：\n${JSON.stringify(data, null, 2)}`,
+      text: `今日フォローする案件は ${data.length} 件あります。
+      
+      ${message}`,
+
     });
 
     return NextResponse.json({
@@ -58,3 +70,4 @@ export async function GET() {
     return NextResponse.json({ error }, { status: 500 });
   }
 }
+   
