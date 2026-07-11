@@ -25,25 +25,37 @@ const resend = new Resend(apiKey);
 // 🔵 GET（データ取得）
 export async function GET() {
   try {
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date();
+    today.setHours(0,0,0,0);
 
     const { data, error } = await supabase
       .from("deals")
       .select("*")
-      .eq("next_follow_date", today);
 
     if (error) {
       return NextResponse.json({ error }, { status: 500 });
     }
 
-    if (!data || data.length === 0) {
+  
+    const targetDeals = data.filter((deal) => {
+  const followDate = new Date(deal.next_follow_date);
+  followDate.setHours(0, 0, 0, 0);
+
+  const notifyDate = new Date(followDate);
+  notifyDate.setDate(
+    notifyDate.getDate() - deal.reminder_days
+  );
+
+  return notifyDate.getTime() === today.getTime();
+});
+if (targetDeals.length === 0) {
       return NextResponse.json({
         success: true,
         message: "今日の案件はありません。",
       });
     }
 
-    const message = data
+    const message = targetDeals
   .map(
     (deal) =>
       `案件名：${deal.title}
@@ -56,8 +68,8 @@ export async function GET() {
       from: "onboarding@resend.dev",
       to: "yuta.yone.1021@gmail.com",
       subject: "営業管理アプリ",
-      text: `今日フォローする案件は ${data.length} 件あります。
-      
+      text: `今日フォローする案件は ${targetDeals.length} 件あります。
+
       ${message}`,
 
     });
@@ -70,4 +82,4 @@ export async function GET() {
     return NextResponse.json({ error }, { status: 500 });
   }
 }
-   
+     
