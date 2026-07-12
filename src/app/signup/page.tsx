@@ -25,20 +25,6 @@ export default function SignupPage() {
       alert(error.message);
       return;
     }
-    
-   if (user) {
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .insert({
-      id: user.id,
-      email: user.email!,
-    });
-
-  if (profileError) {
-    alert(profileError.message);
-    return;
-  }
-}
 
     alert("確認メールを送信しました！");
   };
