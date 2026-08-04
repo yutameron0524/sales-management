@@ -36,6 +36,18 @@ export async function GET() {
       return NextResponse.json({ error }, { status: 500 });
     }
 
+    const {
+  data: { users },
+  error: usersError,
+} = await supabase.auth.admin.listUsers();
+
+if (usersError) {
+  return NextResponse.json(
+    { error: usersError },
+    { status: 500 }
+  );
+}
+
   
     const targetDeals = data.filter((deal) => {
   const followDate = new Date(deal.next_follow_date);
@@ -54,7 +66,20 @@ if (targetDeals.length === 0) {
         message: "今日の案件はありません。",
       });
     }
+const firstDeal = targetDeals[0];
 
+const user = users.find(
+  (u) => u.id === firstDeal.user_id
+);
+
+if (!user?.email) {
+  return NextResponse.json(
+    { error: "ユーザーのメールアドレスが見つかりません。" },
+    { status: 500 }
+  );
+}
+
+const email = user.email;
     const message = targetDeals
   .map(
     (deal) =>
@@ -66,7 +91,7 @@ if (targetDeals.length === 0) {
 
     await resend.emails.send({
       from: "onboarding@resend.dev",
-      to: "yuta.yone.1021@gmail.com",
+      to: email, 
       subject: "営業管理アプリ",
       text: `今日フォローする案件は ${targetDeals.length} 件あります。
 
