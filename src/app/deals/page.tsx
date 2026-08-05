@@ -176,14 +176,21 @@ switch (status) {
     statusText = "🟡 明日";
     break;
 
-  case "future":
+  case "expired":
     statusClass = "bg-red-100 text-red-700";
     statusText = "🔴 期限切れ";
     break;
+    
 
-  default:
+  case "future":
     statusClass = "bg-slate-100 text-slate-700";
     statusText = "⚪ 予定あり";
+    break;
+
+  default:
+   statusClass = "bg-slate-100 text-slate-700";
+   statusText = "⚪ 日付未設定";
+
 }
 
     return (

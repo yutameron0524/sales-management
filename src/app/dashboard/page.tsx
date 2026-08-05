@@ -61,7 +61,7 @@ const notificationDeals =
       notifyDate.getDate() - deal.reminder_days
     );
 
-    return today >= notifyDate;
+    return today.getTime() === notifyDate.getTime();
   });
 
 setTodayDeals(notificationDeals);
