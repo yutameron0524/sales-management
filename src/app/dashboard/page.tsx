@@ -61,6 +61,14 @@ const notificationDeals =
       notifyDate.getDate() - deal.reminder_days
     );
 
+console.log({
+  title: deal.title,
+  followDate: deal.next_follow_date,
+  reminderDays: deal.reminder_days,
+  notifyDate,
+  today,
+});
+
     return today.getTime() === notifyDate.getTime();
   });
 
