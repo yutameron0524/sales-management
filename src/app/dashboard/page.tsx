@@ -47,32 +47,14 @@ const fetchTodayDeals = async () => {
   }
 
   const today = new Date();
-today.setHours(0, 0, 0, 0);
+const todayString = `${today.getFullYear()}-${String(
+  today.getMonth() + 1
+).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
-const notificationDeals =
-  (data ?? []).filter((deal) => {
-    if (!deal.next_follow_date) return false;
-
-    const followDate = new Date(deal.next_follow_date);
-    followDate.setHours(0, 0, 0, 0);
-
-    const notifyDate = new Date(followDate);
-    notifyDate.setDate(
-      notifyDate.getDate() - deal.reminder_days
-    );
-
-console.log({
-  title: deal.title,
-  followDate: deal.next_follow_date,
-  reminderDays: deal.reminder_days,
-  notifyDate,
-  today,
+const todayDeals =(data ?? []).filter((deal) => {
+  return deal.next_follow_date ===todayString;
 });
-
-    return today.getTime() === notifyDate.getTime();
-  });
-
-setTodayDeals(notificationDeals);
+ setTodayDeals(todayDeals);
 };
   
   const fetchExpiredDeals = async () => {
