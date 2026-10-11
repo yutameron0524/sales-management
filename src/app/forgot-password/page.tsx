@@ -17,7 +17,7 @@ const handleResetPassword = async () => {
   setLoading(true);
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: "http://localhost:3000/update-password",
+    redirectTo: "https://sales-management-eosin.vercel.app/update-password",
   });
 
   setLoading(false);
